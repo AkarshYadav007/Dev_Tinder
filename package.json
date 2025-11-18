@@ -1,0 +1,22 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "tinder for devs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon app.js",
+    "dev":"node app.js"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "and",
+    "react"
+  ],
+  "author": "Akarsh Yadav",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
