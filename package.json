@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"nodemon app.js",
-    "dev":"node app.js"
+    "start": "nodemon app.js",
+    "dev": "node app.js"
   },
   "keywords": [
     "node",
@@ -17,6 +17,12 @@
   "author": "Akarsh Yadav",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.20.0",
+    "validator": "^13.15.23"
   }
 }
