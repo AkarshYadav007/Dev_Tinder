@@ -18,11 +18,13 @@ const authRouter = require("./routers/authR")
 const profileRouter = require("./routers/profileR")
 const requestRouter = require("./routers/requestR")
 const userRouter = require("./routers/userR")
+const photoRouter = require("./routers/profileR")
 
 app.use("/",authRouter)
 app.use("/",profileRouter)
 app.use("/",requestRouter)
 app.use("/",userRouter)
+app.use("/",photoRouter)
 
 //feed
 app.get("/feed",async (req,res) => {

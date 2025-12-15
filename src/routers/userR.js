@@ -12,7 +12,7 @@ userRouter.get("/user/requests/received",userAuth,async(req,res) =>
         const datu = await ConnectionRequest.find({
             toUserid:loggedInUser._id,
             status:"interested"
-        }).populate("fromUserid","FirstName LastName Age Gender")
+        }).populate("fromUserid","FirstName LastName Age Gender photo")
 
         const datavalue = datu.map(row => row.fromUserid)
 
@@ -35,7 +35,7 @@ userRouter.get("/user/connections",userAuth,async(req,res) =>
             $or:[
                 {fromUserid:loggedInUser._id,status:"accepted"},
                 {toUserid:loggedInUser._id,status:"accepted"}]
-        }).populate("toUserid","FirstName LastName Age Gender").populate("fromUserid", "FirstName LastName Age Gender")
+        }).populate("toUserid","FirstName LastName Age Gender photo").populate("fromUserid", "FirstName LastName Age Gender photo")
 
         const datavalue = datu.map((row) => 
             {
@@ -76,10 +76,12 @@ userRouter.get("/user/feed",userAuth,async (req,res) => {
         [
             {_id:{$nin: Array.from(uniquedata)}},
             {_id:{$ne: loggedInUser._id}} 
-        ]}).select("FirstName LastName Age Gender").skip(skip).limit(limit)
+        ]}).select("FirstName LastName Age Gender photo about").skip(skip).limit(limit)
         res.send(finaldata)
 })
 
 
 
     module.exports = userRouter;
+
+

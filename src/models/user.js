@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt");
 
 const userschema = mongoose.Schema({
     FirstName:{
@@ -27,10 +28,22 @@ const userschema = mongoose.Schema({
                 }
         }
     },
-    Password:{
-        type:String,
-        required:true,
-    },
+    Password: {
+    type: String,
+    required: true,
+    validate(value) {
+        if (!validator.isStrongPassword(value, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase:0,
+            minNumbers: 1,
+            minSymbols: 1
+        })) {
+            throw new Error("Password is not strong enough");
+        }
+    }
+},
+
     Age:{
         type:Number,
         min:18
@@ -44,9 +57,32 @@ const userschema = mongoose.Schema({
             throw new Error("Gender entered is incorrect");
             }
         }
+    },
+
+    photo: {
+        type: String,
+        default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
+    },
+
+    about: {
+        type: String,
+        maxLength: 500,
+        default: ""
     }
 },
 {timestamps:true})
+
+// Hash password AFTER validation, BEFORE saving
+userschema.pre("save", async function(next) {
+    const user = this;
+
+    // Hash only if password is new or modified
+    if (user.isModified("Password")) {
+        user.Password = await bcrypt.hash(user.Password, 10);
+    }
+
+    next();
+});
 
 userschema.methods.getJWT = async function () 
 {

@@ -16,14 +16,22 @@ authRouter.post("/signup", async (req,res) => {
 
   validatesignup(req.body)
 
-  const{FirstName,LastName,Email,Password,Age,Gender} = req.body;
+  const{FirstName,LastName,Email,Password} = req.body;
 
-  const EncPassword = await bcrypt.hash(Password,10);
-
-  const user = new User({FirstName,LastName,Email,Password:EncPassword,Age,Gender})
+  const user = new User({FirstName,LastName,Email,Password})
   
-    await user.save();
-    res.send("data saved successfully")
+    const savedUser = await user.save();
+
+        const token = await savedUser.getJWT();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 1000
+    });
+
+    res.send(savedUser)
   }
   catch(err){
     res.status(500).send("Failed to save data"+ err.message);
@@ -48,6 +56,7 @@ authRouter.post("/login", async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      maxAge: 60 * 60 * 1000
     });
 
     res.send(user);
