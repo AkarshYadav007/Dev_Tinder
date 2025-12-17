@@ -25,7 +25,7 @@ profileRouter.get("/profile/view",userAuth,async (req,res) =>
   }
   )
 
-profileRouter.patch("/profile/edit",upload.fields([{name:"photo",maxCount:1}]),async (req,res) => 
+profileRouter.post("/profile/edit",upload.fields([{name:"photo",maxCount:1}]),async (req,res) => 
     {
         try{const allowedkeys = ["Gender","Age","photo","about"]
     const isallowedupdate = Object.keys(req.body).every((k) => allowedkeys.includes(k))
