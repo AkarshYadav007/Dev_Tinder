@@ -41,7 +41,8 @@ const userschema = mongoose.Schema({
         })) {
             throw new Error("Password is not strong enough");
         }
-    }
+    },
+    select: false
 },
 
     Age:{
@@ -63,6 +64,10 @@ const userschema = mongoose.Schema({
         type: String,
         default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
     },
+    photoPublicId: {
+    type: String,
+    default: null
+  },
 
     about: {
         type: String,
@@ -84,15 +89,15 @@ userschema.pre("save", async function(next) {
     next();
 });
 
-userschema.methods.getJWT = async function () 
-{
-    const user = this
-
-    const token = await jwt.sign({_id:user._id},"coolcool@007",{expiresIn: "1h"})
-
-    return token;
-}
+userschema.methods.getJWT = function() {
+  return jwt.sign(
+    { _id: this._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+};
 
 const User = mongoose.model("user",userschema);
 
 module.exports = User;
+
