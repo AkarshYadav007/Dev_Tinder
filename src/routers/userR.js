@@ -14,7 +14,10 @@ userRouter.get("/user/requests/received",userAuth,async(req,res) =>
             status:"interested"
         }).populate("fromUserid","FirstName LastName Age Gender photo")
 
-        const datavalue = datu.map(row => row.fromUserid)
+        const datavalue = datu
+  .filter(row => row.fromUserid !== null)
+  .map(row => row.fromUserid);
+
 
         if (datavalue.length === 0) {
     return res.json({ data: [] });
@@ -37,12 +40,15 @@ userRouter.get("/user/connections",userAuth,async(req,res) =>
                 {toUserid:loggedInUser._id,status:"accepted"}]
         }).populate("toUserid","FirstName LastName Age Gender photo").populate("fromUserid", "FirstName LastName Age Gender photo")
 
-        const datavalue = datu.map((row) => 
-            {
-                if(row.fromUserid._id.toString() === loggedInUser._id.toString())
-                {return row.toUserid;}
-                return row.fromUserid;
-            })
+        const datavalue = datu
+  .filter(row => row.fromUserid && row.toUserid) // 🔐 IMPORTANT
+  .map(row => {
+    if (row.fromUserid._id.toString() === loggedInUser._id.toString()) {
+      return row.toUserid;
+    }
+    return row.fromUserid;
+  });
+
         if (datavalue.length === 0) {
     return res.json({ data: [] });
 }
