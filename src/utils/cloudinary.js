@@ -21,10 +21,6 @@ const uploadToCloudinary = (buffer, options = {}) => {
         {
           resource_type: "image",
           folder: "profile_photos",
-          transformation: [
-            { width: 500, height: 500, crop: "fill", gravity: "face" },
-            { quality: "auto", fetch_format: "auto" },
-          ],
           ...options,
         },
         (error, result) => {

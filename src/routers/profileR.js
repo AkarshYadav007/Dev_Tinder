@@ -21,7 +21,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 });
 
 /* ------------------ EDIT PROFILE ------------------ */
-profileRouter.patch(
+profileRouter.post(
   "/profile/edit",
   userAuth,
   upload.single("photo"),
