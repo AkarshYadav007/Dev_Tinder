@@ -63,7 +63,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth,async (req,res)
                 throw new Error("status not allowed")
             }
             const userinfo = await ConnectionRequest.findOne({
-                fromUserid: requestId,
+                _id: requestId,
                 toUserid: loggedUser,
                 status:"interested"
             })

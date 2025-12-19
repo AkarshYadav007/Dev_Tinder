@@ -1,11 +1,7 @@
-const validatesignup = (req) => 
-    {
-        const {FirstName,LastName,Email,Password} = req;
+    const validatesignup = ({ FirstName, LastName, Email, Password }) => {
+  if (!FirstName || !LastName || !Email || !Password) {
+    throw new Error("All fields are required");
+  }
+};
 
-        if(FirstName.length === 0 || LastName.length === 0)
-        {
-            throw new Error("bhenchod laude lag gye hai");
-        }
-    }
-
-    module.exports = validatesignup;
+module.exports = validatesignup;

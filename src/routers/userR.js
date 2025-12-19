@@ -17,7 +17,7 @@ userRouter.get("/user/requests/received",userAuth,async(req,res) =>
         const datavalue = datu.map(row => row.fromUserid)
 
         if (datavalue.length === 0) {
-    return res.send("No Pending Requests");
+    return res.json({ data: [] });
 }
         else
             {
@@ -44,7 +44,7 @@ userRouter.get("/user/connections",userAuth,async(req,res) =>
                 return row.fromUserid;
             })
         if (datavalue.length === 0) {
-    return res.send("No Connections Found");
+    return res.json({ data: [] });
 }
 
         else

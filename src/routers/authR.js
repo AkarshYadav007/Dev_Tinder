@@ -22,12 +22,10 @@ authRouter.post("/signup", async (req, res) => {
 
     const { FirstName, LastName, Email, Password } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ Email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered" });
     }
-
 
     const user = new User({
       FirstName,
@@ -37,21 +35,22 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     const savedUser = await user.save();
-
-    // Generate JWT using method in User model
     const token = await savedUser.getJWT();
 
-    // Set cookie
     res.cookie("token", token, cookieOptions);
 
-    // Return user info (never password)
+    // ✅ RETURN FULL USER (NO PASSWORD)
     res.status(201).json({
       message: "User created successfully",
       user: {
-        id: savedUser._id,
+        _id: savedUser._id,
         FirstName: savedUser.FirstName,
         LastName: savedUser.LastName,
         Email: savedUser.Email,
+        Age: savedUser.Age,
+        Gender: savedUser.Gender,
+        photo: savedUser.photo,
+        about: savedUser.about,
       },
     });
   } catch (err) {
@@ -62,6 +61,7 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
+
 /* ---------------- LOGIN ---------------- */
 authRouter.post("/login", async (req, res) => {
   try {
@@ -71,31 +71,42 @@ authRouter.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Email and Password required" });
     }
 
-    // Include password explicitly (if excluded in schema)
+    // Fetch password only for comparison
     const user = await User.findOne({ Email }).select("+Password");
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     const isPasswordValid = await bcrypt.compare(Password, user.Password);
-    if (!isPasswordValid)
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     const token = await user.getJWT();
-
     res.cookie("token", token, cookieOptions);
 
+    // ✅ RETURN FULL USER (NO PASSWORD)
     res.status(200).json({
       message: "Login successful",
       user: {
-        id: user._id,
+        _id: user._id,
         FirstName: user.FirstName,
         LastName: user.LastName,
         Email: user.Email,
+        Age: user.Age,
+        Gender: user.Gender,
+        photo: user.photo,
+        about: user.about,
       },
     });
   } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err.message });
+    res.status(500).json({
+      message: "Login failed",
+      error: err.message,
+    });
   }
 });
+
 
 /* ---------------- LOGOUT ---------------- */
 authRouter.post("/logout", (req, res) => {

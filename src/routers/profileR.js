@@ -17,7 +17,18 @@ profileRouter.options("/profile/edit", (req, res) => {
 
 /* ------------------ VIEW PROFILE ------------------ */
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
-  res.json(req.userdata);
+  res.json({
+  user: {
+    _id: req.userdata._id,
+    FirstName: req.userdata.FirstName,
+    LastName: req.userdata.LastName,
+    Email: req.userdata.Email,
+    Age: req.userdata.Age,
+    Gender: req.userdata.Gender,
+    photo: req.userdata.photo,
+    about: req.userdata.about
+  }
+});
 });
 
 /* ------------------ EDIT PROFILE ------------------ */
