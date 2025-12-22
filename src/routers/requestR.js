@@ -6,6 +6,8 @@ const userAuth = require("../middlewares/auth");
 const ConnectionRequest = require("../models/ConnectionRequest");
 const User = require("../models/user");
 
+const sendEmail = require("../utils/sendEmail")
+
 requestRouter.post("/request/send/:status/:toUserid", userAuth, async (req, res) => {
     try {
         const Touserid = new mongoose.Types.ObjectId(req.params.toUserid);
@@ -42,9 +44,20 @@ requestRouter.post("/request/send/:status/:toUserid", userAuth, async (req, res)
         });
 
         await connectionrequest.save();
-        res.send("Request Sent Successfully");
+
+   // try {
+ // await sendEmail.run({
+   // subject: "Someone sent you a friend request",
+   // body: `You've got a friend request from ${req.userdata.FirstName}`
+ // });
+// } catch (err) {
+ // console.error("Email failed:", err.message);
+// }
+
+return res.send("Request Sent Successfully");
+
     } catch (err) {
-        res.status(400).send("ERROR: " + err.message);
+        return res.status(400).send("ERROR: " + err.message);
     }
 });
 
