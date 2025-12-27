@@ -1,11 +1,11 @@
 require("dotenv").config(); // Load .env variables
-
 require("./utils/cronJob")
 
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-
+const http = require("http")
+ 
 const connection = require("./config/database");
 const User = require("./models/user");
 
@@ -13,8 +13,10 @@ const authRouter = require("./routers/authR");
 const profileRouter = require("./routers/profileR");
 const requestRouter = require("./routers/requestR");
 const userRouter = require("./routers/userR");
+const initializeSocket = require("./utils/socket")
 
 const userAuth = require("./middlewares/auth");
+const chatRouter = require("./routers/chatR");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +49,10 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+app.use("/",chatRouter);
+
+const server = http.createServer(app);
+initializeSocket(server);
 
 /* ------------------ FEED ------------------ */
 app.get("/feed", async (req, res) => {
@@ -90,7 +96,7 @@ app.use((err, req, res, next) => {
 connection()
   .then(() => {
     console.log("✅ Database connected successfully");
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
   })
